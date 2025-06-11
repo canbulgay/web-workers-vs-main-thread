@@ -17,8 +17,11 @@ class JSONProcessor {
   // Web Worker'ı başlat
   initializeWorker() {
     try {
-      this.worker = new Worker("worker.js");
-
+      this.worker = new Worker(
+        window.location.pathname.startsWith("/en/")
+          ? "../worker.js"
+          : "worker.js"
+      );
       this.worker.onmessage = (e) => {
         this.handleWorkerMessage(e.data);
       };
@@ -131,7 +134,7 @@ class JSONProcessor {
 
   // Büyük JSON verisi oluştur
   generateLargeJSON() {
-    this.showProgress("Büyük JSON verisi oluşturuluyor...");
+    this.showProgress(t("progressWorker"));
 
     // 5-10MB büyüklüğünde veri oluştur
     const data = this.createLargeDataset();
@@ -544,7 +547,7 @@ class JSONProcessor {
 
   // JSON dosyasını oku
   readJSONFile(file) {
-    this.showProgress("JSON dosyası okunuyor...");
+    this.showProgress(t("progressMainThread"));
 
     const reader = new FileReader();
 
@@ -576,7 +579,7 @@ class JSONProcessor {
     this.isProcessing = true;
     this.isTestActive = true;
     this.testStartTime = Date.now();
-    this.showProgress("Web Worker ile işleniyor...");
+    this.showProgress(t("progressWorker"));
     this.updateUI();
 
     // Test durumunu güncelle
@@ -621,13 +624,13 @@ class JSONProcessor {
     this.isProcessing = true;
     this.isTestActive = true;
     this.testStartTime = Date.now();
-    this.showProgress("Main Thread'de işleniyor...");
+    this.showProgress(t("progressMainThread"));
     this.updateUI();
 
     // Test durumunu güncelle
     this.updateTestStatus("testing", "Main Thread Test");
     this.updateTestMessage(
-      "Main Thread işleme başladı! Butonlara tıklamayı deneyin - UI bloke olabilir.",
+      "Main Thread işleme başladığında bu butonlara tıklamayı deneyin - UI bloke olabilir.",
       "warning"
     );
     this.updateTestButtons(true); // İşleme başladığında butonları aktif et
@@ -655,12 +658,9 @@ class JSONProcessor {
         this.performRealWorldProcessing(parsedData);
 
         // Kasıtlı 2 saniye delay - UI bloke etkisini göstermek için
-        this.updateProgress(
-          50,
-          "Veri analizi tamamlandı, işleme devam ediyor..."
-        );
+        this.updateProgress(50, t("progressAnalyzing"));
         this.simulateProcessingDelay(2000);
-        this.updateProgress(100, "İşleme tamamlandı!");
+        this.updateProgress(100, t("progressDone"));
 
         const endTime = performance.now();
         const processingTime = endTime - startTime;
@@ -865,16 +865,16 @@ class JSONProcessor {
 
     // Test aktifse mesaj göster
     if (this.isTestActive) {
-      const processingMethod = this.isProcessing ? "Main Thread" : "Web Worker";
-      this.updateTestMessage(
-        `✅ Buton tıklandı! (${processingMethod} işleme sırasında) - ${currentTime}`,
-        "success"
-      );
+      const processingMethod = this.isProcessing
+        ? t("mainThread")
+        : t("webWorker");
+      const msg = t("testButtonClicked")
+        .replace("{method}", processingMethod)
+        .replace("{time}", currentTime);
+      this.updateTestMessage(msg, "success");
     } else {
-      this.updateTestMessage(
-        `🎯 Test butonu tıklandı! (${currentTime}) - İşleme başlatın ve tekrar deneyin.`,
-        "info"
-      );
+      const msg = t("testButtonClickedIdle").replace("{time}", currentTime);
+      this.updateTestMessage(msg, "info");
     }
 
     console.log(`Test butonu tıklandı: ${buttonId} - ${currentTime}`);
@@ -884,7 +884,11 @@ class JSONProcessor {
   updateTestStatus(status, text) {
     const statusElement = document.getElementById("testStatus");
     if (statusElement) {
-      statusElement.textContent = text;
+      let statusText = text;
+      if (status === "ready") statusText = t("testStatusReady");
+      else if (status === "testing") statusText = t("testStatusTesting");
+      else if (status === "error") statusText = t("testStatusError");
+      statusElement.textContent = statusText;
       statusElement.className = "status-value " + status;
     }
   }
@@ -893,7 +897,39 @@ class JSONProcessor {
   updateTestMessage(message, type = "info") {
     const messageElement = document.getElementById("testMessage");
     if (messageElement) {
-      messageElement.innerHTML = `<p>${message}</p>`;
+      let msg = message;
+      if (
+        message ===
+          "Main Thread işleme başladığında bu butonlara tıklamayı deneyin!" ||
+        message === t("testMessageMainThread")
+      ) {
+        msg = t("testMessageMainThread");
+      } else if (
+        message ===
+          "Web Worker işleme başladı! Butonlara tıklamayı deneyin - UI bloke olmayacak." ||
+        message === t("testMessageWorker")
+      ) {
+        msg = t("testMessageWorker");
+      } else if (
+        message ===
+          "Main Thread işleme tamamlandı! Butonlara tıklayabildiniz mi?" ||
+        message === t("testMessageMainThreadDone")
+      ) {
+        msg = t("testMessageMainThreadDone");
+      } else if (
+        message ===
+          "Web Worker işleme tamamlandı! Butonlara tıklayabildiniz mi?" ||
+        message === t("testMessageWorkerDone")
+      ) {
+        msg = t("testMessageWorkerDone");
+      } else if (
+        message ===
+          "Main Thread işleme başladığında bu butonlara tıklamayı deneyin - UI bloke olabilir." ||
+        message === t("testMessageMainThreadBlock")
+      ) {
+        msg = t("testMessageMainThreadBlock");
+      }
+      messageElement.innerHTML = `<p>${msg}</p>`;
       messageElement.className = "test-message " + type;
     }
   }
@@ -1199,3 +1235,149 @@ class JSONProcessor {
 document.addEventListener("DOMContentLoaded", () => {
   new JSONProcessor();
 });
+
+// --- I18N SİSTEMİ BAŞLANGIÇ ---
+const translations = {
+  tr: {
+    title: "🚀 Web Worker ile Büyük JSON İşleme",
+    subtitle: "25MB+ büyüklüğünde JSON dosyasını Web Worker ile parse edin",
+    selectLanguage: "Dil Seçin:",
+    generateData: "📊 Büyük JSON Verisi Oluştur",
+    loadData: "📁 JSON Dosyası Yükle",
+    processWithWorker: "⚡ Web Worker ile İşle",
+    processMainThread: "🐌 Main Thread ile İşle",
+    uiBlockTestTitle: "🧪 UI Bloke Test Demo",
+    uiBlockTestDesc:
+      "Main Thread işleme sırasında UI'nin bloke olup olmadığını test edin. İşleme başladıktan sonra aşağıdaki butonlara tıklamayı deneyin.",
+    testButton1: "🎯 Test Butonu 1",
+    testButton2: "🎲 Test Butonu 2",
+    testButton3: "⚡ Test Butonu 3",
+    testStatusLabel: "Test Durumu:",
+    clickCounterLabel: "Tıklama Sayısı:",
+    lastClickLabel: "Son Tıklama:",
+    testMessageDefault:
+      "Main Thread işleme başladığında bu butonlara tıklamayı deneyin!",
+    progressText: "İşleniyor...",
+    statsTitle: "📈 İstatistikler",
+    fileSizeLabel: "Dosya Boyutu:",
+    recordCountLabel: "Kayıt Sayısı:",
+    processingTimeLabel: "İşleme Süresi:",
+    processingMethodLabel: "İşleme Yöntemi:",
+    dataPreviewTitle: "📋 İşlenen Veri Önizlemesi",
+    dataPreviewPlaceholder: "Veri yüklenmedi...",
+    comparisonTitle: "⚡ Performans Karşılaştırması",
+    workerTitle: "Web Worker",
+    mainThreadTitle: "Main Thread",
+    workerNotTested: "Henüz test edilmedi",
+    mainThreadNotTested: "Henüz test edilmedi",
+    testStatusReady: "Test Tamamlandı",
+    testStatusTesting: "Test Devam Ediyor",
+    testStatusError: "Hata",
+    testMessageMainThread:
+      "Main Thread işleme başladığında bu butonlara tıklamayı deneyin!",
+    testMessageWorker:
+      "Web Worker işleme başladı! Butonlara tıklamayı deneyin - UI bloke olmayacak.",
+    testMessageMainThreadDone:
+      "Main Thread işleme tamamlandı! Butonlara tıklayabildiniz mi?",
+    testMessageWorkerDone:
+      "Web Worker işleme tamamlandı! Butonlara tıklayabildiniz mi?",
+    testButtonClicked:
+      "✅ Buton tıklandı! ({method} işleme sırasında) - {time}",
+    testButtonClickedIdle:
+      "🎯 Test butonu tıklandı! ({time}) - İşleme başlatın ve tekrar deneyin.",
+    mainThread: "Main Thread",
+    webWorker: "Web Worker",
+    progressMainThread: "Main Thread'de işleniyor...",
+    progressWorker: "Web Worker ile işleniyor...",
+    progressAnalyzing: "Veri analizi tamamlandı, işleme devam ediyor...",
+    progressDone: "İşleme tamamlandı!",
+    testMessageMainThreadBlock:
+      "Main Thread işleme başladığında bu butonlara tıklamayı deneyin - UI bloke olabilir.",
+  },
+  en: {
+    title: "🚀 Big JSON Processing with Web Worker",
+    subtitle: "Parse a 25MB+ JSON file with a Web Worker",
+    selectLanguage: "Select Language:",
+    generateData: "📊 Generate Large JSON Data",
+    loadData: "📁 Load JSON File",
+    processWithWorker: "⚡ Process with Web Worker",
+    processMainThread: "🐌 Process on Main Thread",
+    uiBlockTestTitle: "🧪 UI Block Test Demo",
+    uiBlockTestDesc:
+      "Test if the UI is blocked during Main Thread processing. After starting, try clicking the buttons below.",
+    testButton1: "🎯 Test Button 1",
+    testButton2: "🎲 Test Button 2",
+    testButton3: "⚡ Test Button 3",
+    testStatusLabel: "Test Status:",
+    clickCounterLabel: "Click Count:",
+    lastClickLabel: "Last Click:",
+    testMessageDefault:
+      "Try clicking these buttons when Main Thread processing starts!",
+    progressText: "Processing...",
+    statsTitle: "📈 Statistics",
+    fileSizeLabel: "File Size:",
+    recordCountLabel: "Record Count:",
+    processingTimeLabel: "Processing Time:",
+    processingMethodLabel: "Processing Method:",
+    dataPreviewTitle: "📋 Processed Data Preview",
+    dataPreviewPlaceholder: "No data loaded...",
+    comparisonTitle: "⚡ Performance Comparison",
+    workerTitle: "Web Worker",
+    mainThreadTitle: "Main Thread",
+    workerNotTested: "Not tested yet",
+    mainThreadNotTested: "Not tested yet",
+    testStatusReady: "Test Completed",
+    testStatusTesting: "Test Running",
+    testStatusError: "Error",
+    testMessageMainThread:
+      "Try clicking these buttons when Main Thread processing starts!",
+    testMessageWorker:
+      "Web Worker processing started! Try clicking the buttons - UI will not be blocked.",
+    testMessageMainThreadDone:
+      "Main Thread processing completed! Could you click the buttons?",
+    testMessageWorkerDone:
+      "Web Worker processing completed! Could you click the buttons?",
+    testButtonClicked:
+      "✅ Button clicked! (during {method} processing) - {time}",
+    testButtonClickedIdle:
+      "🎯 Test button clicked! ({time}) - Start processing and try again.",
+    mainThread: "Main Thread",
+    webWorker: "Web Worker",
+    progressMainThread: "Processing on Main Thread...",
+    progressWorker: "Processing with Web Worker...",
+    progressAnalyzing: "Data analysis complete, continuing processing...",
+    progressDone: "Processing complete!",
+    testMessageMainThreadBlock:
+      "Try clicking these buttons when Main Thread processing starts - UI may be blocked.",
+  },
+};
+
+function detectLangFromPath() {
+  const path = window.location.pathname;
+  if (path.startsWith("/en/")) return "en";
+  if (path.startsWith("/tr/")) return "tr";
+  // fallback: URL'de /en/ veya /tr/ yoksa, browser dili veya tr
+  const browserLang = navigator.language.slice(0, 2);
+  if (browserLang === "en") return "en";
+  return "tr";
+}
+
+let currentLang = detectLangFromPath();
+
+function t(key) {
+  return translations[currentLang][key] || key;
+}
+
+function updateI18nTexts() {
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const key = el.getAttribute("data-i18n");
+    if (translations[currentLang][key]) {
+      el.textContent = translations[currentLang][key];
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  updateI18nTexts();
+});
+// --- I18N SİSTEMİ SONU ---

@@ -3,16 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Web Worker ile JSON İşleme</title>
-    <link rel="stylesheet" href="styles.css" />
+    <title>Web Worker vs Main Thread</title>
+    <link rel="stylesheet" href="../styles.css" />
   </head>
   <body>
     <div class="container">
       <header>
-        <h1 data-i18n="title">🚀 Web Worker ile Büyük JSON İşleme</h1>
-        <p data-i18n="subtitle">
-          25MB+ büyüklüğünde JSON dosyasını Web Worker ile parse edin
-        </p>
+        <h1 data-i18n="title">🚀 Big JSON Processing with Web Worker</h1>
+        <p data-i18n="subtitle">Parse a 25MB+ JSON file with a Web Worker</p>
       </header>
 
       <main>
@@ -22,10 +20,10 @@
             class="btn btn-primary"
             data-i18n="generateData"
           >
-            📊 Büyük JSON Verisi Oluştur
+            📊 Generate Large JSON Data
           </button>
           <button id="loadData" class="btn btn-secondary" data-i18n="loadData">
-            📁 JSON Dosyası Yükle
+            📁 Load JSON File
           </button>
           <button
             id="processWithWorker"
@@ -33,7 +31,7 @@
             disabled
             data-i18n="processWithWorker"
           >
-            ⚡ Web Worker ile İşle
+            ⚡ Process with Web Worker
           </button>
           <button
             id="processMainThread"
@@ -41,46 +39,46 @@
             disabled
             data-i18n="processMainThread"
           >
-            🐌 Main Thread ile İşle
+            🐌 Process on Main Thread
           </button>
         </div>
 
         <!-- UI Bloke Test Demo -->
         <div class="ui-block-test">
-          <h3 data-i18n="uiBlockTestTitle">🧪 UI Bloke Test Demo</h3>
+          <h3 data-i18n="uiBlockTestTitle">🧪 UI Block Test Demo</h3>
           <p class="test-description" data-i18n="uiBlockTestDesc">
-            Main Thread işleme sırasında UI'nin bloke olup olmadığını test edin.
-            İşleme başladıktan sonra aşağıdaki butonlara tıklamayı deneyin.
+            Test if the UI is blocked during Main Thread processing. After
+            starting, try clicking the buttons below.
           </p>
 
           <div class="test-controls">
             <button id="testButton1" class="test-btn" data-i18n="testButton1">
-              🎯 Test Butonu 1
+              🎯 Test Button 1
             </button>
             <button id="testButton2" class="test-btn" data-i18n="testButton2">
-              🎲 Test Butonu 2
+              🎲 Test Button 2
             </button>
             <button id="testButton3" class="test-btn" data-i18n="testButton3">
-              ⚡ Test Butonu 3
+              ⚡ Test Button 3
             </button>
           </div>
 
           <div class="test-results">
             <div class="test-status">
               <span class="status-label" data-i18n="testStatusLabel"
-                >Test Durumu:</span
+                >Test Status:</span
               >
               <span id="testStatus" class="status-value">Hazır</span>
             </div>
             <div class="click-counter">
               <span class="counter-label" data-i18n="clickCounterLabel"
-                >Tıklama Sayısı:</span
+                >Click Count:</span
               >
               <span id="clickCount" class="counter-value">0</span>
             </div>
             <div class="last-click">
               <span class="last-click-label" data-i18n="lastClickLabel"
-                >Son Tıklama:</span
+                >Last Click:</span
               >
               <span id="lastClickTime" class="last-click-value">-</span>
             </div>
@@ -88,7 +86,7 @@
 
           <div class="test-message" id="testMessage">
             <p data-i18n="testMessageDefault">
-              Main Thread işleme başladığında bu butonlara tıklamayı deneyin!
+              Try clicking these buttons when Main Thread processing starts!
             </p>
           </div>
         </div>
@@ -97,34 +95,34 @@
           <div class="progress-bar">
             <div class="progress-fill"></div>
           </div>
-          <div class="progress-text" data-i18n="progressText">İşleniyor...</div>
+          <div class="progress-text" data-i18n="progressText">
+            Processing...
+          </div>
         </div>
 
         <div class="results">
           <div class="result-card">
-            <h3 data-i18n="statsTitle">📈 İstatistikler</h3>
+            <h3 data-i18n="statsTitle">📈 Statistics</h3>
             <div id="stats" class="stats">
               <div class="stat-item">
-                <span class="label" data-i18n="fileSizeLabel"
-                  >Dosya Boyutu:</span
-                >
+                <span class="label" data-i18n="fileSizeLabel">File Size:</span>
                 <span id="fileSize" class="value">-</span>
               </div>
               <div class="stat-item">
                 <span class="label" data-i18n="recordCountLabel"
-                  >Kayıt Sayısı:</span
+                  >Record Count:</span
                 >
                 <span id="recordCount" class="value">-</span>
               </div>
               <div class="stat-item">
                 <span class="label" data-i18n="processingTimeLabel"
-                  >İşleme Süresi:</span
+                  >Processing Time:</span
                 >
                 <span id="processingTime" class="value">-</span>
               </div>
               <div class="stat-item">
                 <span class="label" data-i18n="processingMethodLabel"
-                  >İşleme Yöntemi:</span
+                  >Processing Method:</span
                 >
                 <span id="processingMethod" class="value">-</span>
               </div>
@@ -132,28 +130,28 @@
           </div>
 
           <div class="result-card">
-            <h3 data-i18n="dataPreviewTitle">📋 İşlenen Veri Önizlemesi</h3>
+            <h3 data-i18n="dataPreviewTitle">📋 Processed Data Preview</h3>
             <div id="dataPreview" class="data-preview">
               <p class="placeholder" data-i18n="dataPreviewPlaceholder">
-                Veri yüklenmedi...
+                No data loaded...
               </p>
             </div>
           </div>
         </div>
 
         <div class="comparison">
-          <h3 data-i18n="comparisonTitle">⚡ Performans Karşılaştırması</h3>
+          <h3 data-i18n="comparisonTitle">⚡ Performance Comparison</h3>
           <div class="comparison-grid">
             <div class="comparison-card">
               <h4 data-i18n="workerTitle">Web Worker</h4>
               <div id="workerResults" class="comparison-results">
-                <p data-i18n="workerNotTested">Henüz test edilmedi</p>
+                <p data-i18n="workerNotTested">Not tested yet</p>
               </div>
             </div>
             <div class="comparison-card">
               <h4 data-i18n="mainThreadTitle">Main Thread</h4>
               <div id="mainThreadResults" class="comparison-results">
-                <p data-i18n="mainThreadNotTested">Henüz test edilmedi</p>
+                <p data-i18n="mainThreadNotTested">Not tested yet</p>
               </div>
             </div>
           </div>
@@ -211,6 +209,6 @@
       </footer> -->
     </div>
 
-    <script src="app.js"></script>
+    <script src="../app.js"></script>
   </body>
 </html>

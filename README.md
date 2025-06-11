@@ -211,3 +211,16 @@ Sorularınız için issue açabilir veya pull request gönderebilirsiniz.
 ---
 
 **Not**: Bu proje eğitim amaçlı oluşturulmuştur ve Web Worker'ların performans avantajlarını göstermeyi amaçlamaktadır.
+
+## 🌐 Çok Dilli (i18n) Desteği
+
+Bu proje Türkçe ve İngilizce dillerini destekler. Sağ üstteki dil seçiciden istediğiniz dili seçebilirsiniz. Tüm arayüz metinleri anında güncellenir.
+
+**Nasıl çalışır?**
+
+- Tüm metinler bir çeviri sözlüğünde tutulur.
+- HTML elementlerinde `data-i18n` attribute'u ile anahtarlar atanır.
+- Seçilen dile göre metinler otomatik güncellenir.
+- Dil tercihi localStorage'da saklanır.
+
+Yeni dil eklemek için `app.js` içindeki `translations` nesnesine yeni bir dil objesi ekleyebilirsiniz.
