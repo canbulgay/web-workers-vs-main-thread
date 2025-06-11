@@ -17,11 +17,21 @@ class JSONProcessor {
   // Web Worker'ı başlat
   initializeWorker() {
     try {
-      this.worker = new Worker(
-        window.location.pathname.startsWith("/en/")
-          ? "../worker.js"
-          : "worker.js"
-      );
+      // GitHub Pages için worker yolunu düzelt
+      let workerPath;
+
+      // GitHub Pages'da mı kontrol et
+      if (window.location.hostname === "canbulgay.github.io") {
+        // GitHub Pages için mutlak yol
+        workerPath = "/web-workers-vs-main-thread/worker.js";
+      } else {
+        // Yerel geliştirme için göreli yol
+        workerPath = "worker.js";
+      }
+
+      console.log("Worker path:", workerPath);
+
+      this.worker = new Worker(workerPath);
       this.worker.onmessage = (e) => {
         this.handleWorkerMessage(e.data);
       };
@@ -1231,8 +1241,37 @@ class JSONProcessor {
   }
 }
 
+// Dil değiştirme fonksiyonları
+function switchLanguage(lang) {
+  const url = new URL(window.location);
+  url.searchParams.set("lang", lang);
+  window.location.href = url.toString();
+}
+
+function updateLanguageSwitcher() {
+  // Dil değiştirici butonları oluştur
+  const langSwitcher = document.createElement("div");
+  langSwitcher.className = "language-switcher";
+  langSwitcher.innerHTML = `
+    <button onclick="switchLanguage('tr')" class="lang-btn ${
+      currentLang === "tr" ? "active" : ""
+    }">🇹🇷 TR</button>
+    <button onclick="switchLanguage('en')" class="lang-btn ${
+      currentLang === "en" ? "active" : ""
+    }">🇺🇸 EN</button>
+  `;
+
+  // Header'a ekle
+  const header = document.querySelector("header");
+  if (header) {
+    header.appendChild(langSwitcher);
+  }
+}
+
 // Uygulamayı başlat
 document.addEventListener("DOMContentLoaded", () => {
+  updateI18nTexts();
+  updateLanguageSwitcher();
   new JSONProcessor();
 });
 
@@ -1353,10 +1392,20 @@ const translations = {
 };
 
 function detectLangFromPath() {
+  // Önce URL query string'den dil parametresini kontrol et
+  const urlParams = new URLSearchParams(window.location.search);
+  const langParam = urlParams.get("lang");
+
+  if (langParam === "en" || langParam === "tr") {
+    return langParam;
+  }
+
+  // Path tabanlı kontrol (fallback)
   const path = window.location.pathname;
   if (path.startsWith("/en/")) return "en";
   if (path.startsWith("/tr/")) return "tr";
-  // fallback: URL'de /en/ veya /tr/ yoksa, browser dili veya tr
+
+  // Browser dili kontrolü (fallback)
   const browserLang = navigator.language.slice(0, 2);
   if (browserLang === "en") return "en";
   return "tr";

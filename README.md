@@ -1,196 +1,168 @@
-# 🚀 Web Worker ile Büyük JSON İşleme Projesi
+# 🚀 Web Workers vs Main Thread - JSON Processing Demo
 
-Bu proje, Web Worker'ların performans avantajlarını göstermek için büyük JSON dosyalarını işleyen bir demo uygulamasıdır.
+Bu proje, büyük JSON dosyalarını (25MB+) işlerken Web Worker'ların Main Thread'e göre avantajlarını gösteren interaktif bir demo uygulamasıdır.
 
-## 📋 Proje Özellikleri
+## 🌐 Canlı Demo
 
-- **5-10MB büyüklüğünde JSON verisi oluşturma**
-- **Web Worker ile JSON parse işlemi**
-- **Main Thread ile karşılaştırmalı performans testi**
-- **Gerçek zamanlı UI güncellemeleri**
-- **Modern ve responsive tasarım**
-- **Detaylı performans istatistikleri**
+- **Ana Sayfa**: https://canbulgay.github.io/web-workers-vs-main-thread/
+- **İngilizce**: https://canbulgay.github.io/web-workers-vs-main-thread/?lang=en
+- **Türkçe**: https://canbulgay.github.io/web-workers-vs-main-thread/?lang=tr
+
+## ✨ Özellikler
+
+- 📊 **25MB+ Büyük JSON Verisi Oluşturma**: Gerçekçi test verileri
+- ⚡ **Web Worker İşleme**: UI'yi bloke etmeden arka planda işleme
+- 🐌 **Main Thread İşleme**: UI bloke etkisini gösteren karşılaştırma
+- 🧪 **UI Bloke Test Demo**: İşleme sırasında UI'nin responsive olup olmadığını test etme
+- 🌍 **Çoklu Dil Desteği**: Türkçe ve İngilizce
+- 📈 **Performans Karşılaştırması**: Gerçek zamanlı istatistikler
+- 📋 **Veri Önizlemesi**: İşlenen verinin detaylı görünümü
+
+## 🎯 Amaç
+
+Bu demo, Web Worker'ların büyük veri işleme sırasında UI'nin responsive kalmasını nasıl sağladığını göstermek için tasarlanmıştır. Kullanıcılar:
+
+1. Büyük JSON verisi oluşturabilir veya yükleyebilir
+2. Web Worker ile işleyebilir (UI responsive kalır)
+3. Main Thread ile işleyebilir (UI bloke olur)
+4. İşleme sırasında test butonlarına tıklayarak farkı gözlemleyebilir
 
 ## 🛠️ Teknolojiler
 
-- **HTML5** - Modern web standartları
-- **CSS3** - Responsive ve animasyonlu tasarım
-- **JavaScript ES6+** - Modern JavaScript özellikleri
-- **Web Workers API** - Arka plan işleme
-- **File API** - Dosya yükleme işlemleri
+- **HTML5**: Modern web standartları
+- **CSS3**: Responsive tasarım ve animasyonlar
+- **JavaScript ES6+**: Modern JavaScript özellikleri
+- **Web Workers**: Arka plan işleme
+- **GitHub Pages**: Ücretsiz hosting
 
-## 🚀 Kurulum ve Çalıştırma
-
-### 1. Projeyi İndirin
-
-```bash
-git clone https://github.com/canbulgay/web-workers-vs-main-thread
-cd web-workers-vs-main-thread
-```
-
-### 2. HTTP Sunucusu Başlatın
-
-```bash
-# Python 3 ile
-python3 -m http.server 8000
-
-# veya Node.js ile
-npx http-server
-
-# veya npm script ile
-npm start
-```
-
-### 3. Tarayıcıda Açın
-
-```
-http://localhost:8000
-```
-
-## 📖 Kullanım
-
-### 1. Veri Oluşturma
-
-- **"Büyük JSON Verisi Oluştur"** butonuna tıklayın
-- Sistem otomatik olarak ~7MB büyüklüğünde test verisi oluşturacak
-
-### 2. Dosya Yükleme
-
-- **"JSON Dosyası Yükle"** butonuna tıklayın
-- Kendi JSON dosyanızı seçin (5-10MB önerilen)
-
-### 3. İşleme
-
-- **"Web Worker ile İşle"** - Arka planda işleme
-- **"Main Thread ile İşle"** - UI'yi bloke eden işleme
-
-### 4. Sonuçları İnceleme
-
-- İşleme sürelerini karşılaştırın
-- UI bloke durumunu gözlemleyin
-- İşlenen verinin önizlemesini görün
-
-## 🔍 Araştırma Soruları ve Cevapları
-
-### 1. SharedWorker nedir? Worker'dan farkı nedir?
-
-**SharedWorker**, birden fazla sekme veya pencere arasında paylaşılabilen bir worker türüdür. Normal Worker'lar her sekme için ayrı oluşturulurken, SharedWorker tüm sekmeler arasında ortak kullanılır.
-
-**Farklar:**
-
-- **Worker**: Her sekme için ayrı instance
-- **SharedWorker**: Tüm sekmeler arasında paylaşılan tek instance
-- **SharedWorker**: Daha az bellek kullanımı
-- **SharedWorker**: Sekmeler arası iletişim mümkün
-
-### 2. Web Worker'da DOM neden kullanılamaz?
-
-Web Worker'lar ayrı thread'lerde çalışır ve DOM'a doğrudan erişimleri yoktur. Bu, thread güvenliği ve performans için tasarlanmıştır.
-
-**Nedenleri:**
-
-- **Thread Güvenliği**: DOM manipülasyonu Main Thread'de güvenli
-- **Performans**: DOM erişimi maliyetli
-- **Mimari**: Worker'lar hesaplama odaklı
-- **İletişim**: postMessage ile veri paylaşımı
-
-### 3. Web Worker'lar ne zaman "fazla karmaşık" hale gelir?
-
-Web Worker'lar şu durumlarda karmaşık hale gelebilir:
-
-**Karmaşıklık Faktörleri:**
-
-- Çok fazla worker kullanımı
-- Karmaşık mesajlaşma protokolleri
-- Bellek yönetimi sorunları
-- Debug zorluğu
-- Worker yaşam döngüsü yönetimi
-- Hata yakalama ve işleme
-
-### 4. Comlink.js nedir? Web Worker'ları daha kolay kullanmak için ne sağlar?
-
-**Comlink.js**, Web Worker'lar arasında nesne referanslarını paylaşmayı ve daha kolay API çağrıları yapmayı sağlayan bir kütüphanedir.
-
-**Sağladığı Avantajlar:**
-
-- **Nesne Referansları**: Karmaşık nesneleri paylaşma
-- **Promise Desteği**: Async/await kullanımı
-- **Proxy API**: Worker'ları normal nesne gibi kullanma
-- **Otomatik Serileştirme**: Manuel postMessage yazmaya gerek yok
-- **TypeScript Desteği**: Tip güvenliği
-
-## 📊 Performans Karşılaştırması
-
-### Web Worker Avantajları
-
-- ✅ UI bloke olmaz
-- ✅ Arka plan işleme
-- ✅ Daha iyi kullanıcı deneyimi
-- ✅ Çoklu çekirdek kullanımı
-
-### Main Thread Avantajları
-
-- ✅ Basit implementasyon
-- ✅ Doğrudan DOM erişimi
-- ✅ Daha az bellek kullanımı
-- ✅ Debug kolaylığı
-
-## 🏗️ Proje Yapısı
+## 📁 Proje Yapısı
 
 ```
 web-workers-vs-main-thread/
 ├── index.html          # Ana HTML dosyası
 ├── styles.css          # CSS stilleri
-├── app.js              # Ana JavaScript uygulaması
-├── worker.js           # Web Worker dosyası
-├── package.json        # Proje konfigürasyonu
+├── app.js              # Ana uygulama mantığı
+├── worker.js           # Web Worker kodu
+├── 404.html            # GitHub Pages SPA routing
 └── README.md           # Bu dosya
 ```
 
+## 🚀 Kurulum ve Çalıştırma
+
+### Yerel Geliştirme
+
+1. Projeyi klonlayın:
+
+```bash
+git clone https://github.com/canbulgay/web-workers-vs-main-thread.git
+cd web-workers-vs-main-thread
+```
+
+2. Bir web sunucusu başlatın (CORS için gerekli):
+
+```bash
+# Python 3
+python -m http.server 8000
+
+# Node.js (http-server)
+npx http-server
+
+# PHP
+php -S localhost:8000
+```
+
+3. Tarayıcıda açın:
+
+```
+http://localhost:8000
+```
+
+### GitHub Pages Deployment
+
+1. Repository'yi GitHub'a push edin
+2. Settings > Pages > Source: Deploy from a branch
+3. Branch: main, folder: / (root)
+4. Save
+
+## 🧪 Kullanım
+
+### 1. Veri Oluşturma/Yükleme
+
+- **"📊 Büyük JSON Verisi Oluştur"**: 25MB+ gerçekçi test verisi oluşturur
+- **"📁 JSON Dosyası Yükle"**: Kendi JSON dosyanızı yükleyebilirsiniz
+
+### 2. İşleme Testi
+
+- **"⚡ Web Worker ile İşle"**: UI'yi bloke etmeden arka planda işleme
+- **"🐌 Main Thread ile İşle"**: UI'nin bloke olduğunu gösteren işleme
+
+### 3. UI Bloke Testi
+
+İşleme başladıktan sonra test butonlarına tıklayın:
+
+- **Web Worker**: Butonlar responsive kalır ✅
+- **Main Thread**: Butonlar bloke olur ⚠️
+
+## 📊 Performans Karşılaştırması
+
+| Özellik           | Web Worker    | Main Thread |
+| ----------------- | ------------- | ----------- |
+| UI Responsiveness | ✅ Responsive | ⚠️ Bloke    |
+| İşleme Hızı       | Hızlı         | Hızlı       |
+| Bellek Kullanımı  | Ayrı thread   | Ana thread  |
+| Debug Zorluğu     | Orta          | Kolay       |
+| Browser Desteği   | Modern        | Tümü        |
+
+## 🔍 Teknik Detaylar
+
+### Web Worker Avantajları
+
+- UI thread'i bloke etmez
+- Paralel işleme
+- Daha iyi kullanıcı deneyimi
+
+### Web Worker Dezavantajları
+
+- DOM erişimi yok
+- Karmaşık mesajlaşma
+- Debug zorluğu
+
+### Gerçek Dünya İşlemleri
+
+Demo'da gerçekleştirilen işlemler:
+
+1. **Veri Analizi**: İstatistik hesaplama
+2. **Filtreleme**: Aktif kayıtları filtreleme
+3. **Sıralama**: Fiyat, rating, yaş bazlı sıralama
+4. **Normalizasyon**: Veri standardizasyonu
+5. **Doğrulama**: Veri bütünlüğü kontrolü
+6. **Gruplandırma**: Kategori bazlı gruplama
+
+## 🌍 Çoklu Dil Desteği
+
+Proje Türkçe ve İngilizce dillerini destekler:
+
+- URL parametresi: `?lang=tr` veya `?lang=en`
+- Otomatik dil algılama
+- Dinamik içerik güncelleme
+
 ## 🔧 Özelleştirme
 
-### Worker Konfigürasyonu
+### Yeni Dil Ekleme
 
-`worker.js` dosyasında işleme mantığını özelleştirebilirsiniz:
+1. `app.js` dosyasındaki `translations` objesine yeni dil ekleyin
+2. Dil algılama fonksiyonunu güncelleyin
+3. Dil değiştirici butonlarına yeni dil ekleyin
 
-```javascript
-// Özel işleme fonksiyonu ekleyin
-function customProcess(data) {
-  // Özel işleme mantığı
-  return processedData;
-}
-```
+### Worker İşlemlerini Özelleştirme
 
-### Veri Boyutu Ayarlama
+`worker.js` dosyasındaki `performRealWorldProcessing` fonksiyonunu kendi ihtiyaçlarınıza göre düzenleyebilirsiniz.
 
-`app.js` dosyasında veri boyutunu değiştirebilirsiniz:
+## 🐛 Bilinen Sorunlar
 
-```javascript
-const targetSize = 10 * 1024 * 1024; // 10MB
-```
-
-## 🐛 Sorun Giderme
-
-### Web Worker Yüklenmiyor
-
-- HTTP sunucusu kullandığınızdan emin olun
-- Tarayıcı konsolunu kontrol edin
-- CORS ayarlarını kontrol edin
-
-### Büyük Dosyalar Yüklenmiyor
-
-- Tarayıcı bellek limitlerini kontrol edin
-- Dosya boyutunu küçültün
-- Chunked loading kullanın
-
-## 📈 Gelecek Geliştirmeler
-
-- [ ] SharedWorker desteği
-- [ ] Comlink.js entegrasyonu
-- [ ] Streaming JSON parsing
-- [ ] WebAssembly entegrasyonu
-- [ ] Service Worker desteği
-- [ ] Offline çalışma modu
+- **GitHub Pages SPA Routing**: `/en/` ve `/tr/` path'leri için 404.html fallback kullanılır
+- **Worker Yolu**: GitHub Pages'da worker.js yolu dinamik olarak çözülür
+- **CORS**: Yerel geliştirmede web sunucusu gerekli
 
 ## 🤝 Katkıda Bulunma
 
@@ -200,27 +172,23 @@ const targetSize = 10 * 1024 * 1024; // 10MB
 4. Push yapın (`git push origin feature/amazing-feature`)
 5. Pull Request oluşturun
 
-## 📄 Lisans
+## 📝 Lisans
 
 Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosyasına bakın.
 
-## 📞 İletişim
+## 👨‍💻 Geliştirici
 
-Sorularınız için issue açabilir veya pull request gönderebilirsiniz.
+**Can Bulgay**
+
+- GitHub: [@canbulgay](https://github.com/canbulgay)
+- LinkedIn: [Can Bulgay](https://linkedin.com/in/canbulgay)
+
+## 🙏 Teşekkürler
+
+- Web Workers API dokümantasyonu
+- GitHub Pages hosting
+- Modern web standartları
 
 ---
 
-**Not**: Bu proje eğitim amaçlı oluşturulmuştur ve Web Worker'ların performans avantajlarını göstermeyi amaçlamaktadır.
-
-## 🌐 Çok Dilli (i18n) Desteği
-
-Bu proje Türkçe ve İngilizce dillerini destekler. Sağ üstteki dil seçiciden istediğiniz dili seçebilirsiniz. Tüm arayüz metinleri anında güncellenir.
-
-**Nasıl çalışır?**
-
-- Tüm metinler bir çeviri sözlüğünde tutulur.
-- HTML elementlerinde `data-i18n` attribute'u ile anahtarlar atanır.
-- Seçilen dile göre metinler otomatik güncellenir.
-- Dil tercihi localStorage'da saklanır.
-
-Yeni dil eklemek için `app.js` içindeki `translations` nesnesine yeni bir dil objesi ekleyebilirsiniz.
+⭐ Bu projeyi beğendiyseniz yıldız vermeyi unutmayın!
