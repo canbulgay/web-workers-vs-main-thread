@@ -817,7 +817,7 @@ class JSONProcessor {
   }
 
   // UI test işlemleri için ekstra fonksiyonlar
-  initializeUITest() {
+  initializeUITest(disable = true) {
     // Test butonlarına event listener'ları ekle
     const testButtons = ["testButton1", "testButton2", "testButton3"];
 
@@ -836,6 +836,12 @@ class JSONProcessor {
       "Ana thread işleme başladığında bu butonlara tıklamayı deneyin!",
       "info"
     );
+
+    if (disable) {
+      this.updateTestButtons(false);
+    } else {
+      this.updateTestButtons(true);
+    }
   }
 
   // Test butonuna tıklama işlemi
