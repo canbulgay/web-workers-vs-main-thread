@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Worker ile JSON İşleme</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>🚀 Web Worker ile Büyük JSON İşleme</h1>
+        <p>25MB+ büyüklüğünde JSON dosyasını Web Worker ile parse edin</p>
+      </header>
+
+      <main>
+        <div class="controls">
+          <button id="generateData" class="btn btn-primary">
+            📊 Büyük JSON Verisi Oluştur
+          </button>
+          <button id="loadData" class="btn btn-secondary">
+            📁 JSON Dosyası Yükle
+          </button>
+          <button id="processWithWorker" class="btn btn-success" disabled>
+            ⚡ Web Worker ile İşle
+          </button>
+          <button id="processMainThread" class="btn btn-warning" disabled>
+            🐌 Ana Thread ile İşle
+          </button>
+        </div>
+
+        <!-- UI Bloke Test Demo -->
+        <div class="ui-block-test">
+          <h3>🧪 UI Bloke Test Demo</h3>
+          <p class="test-description">
+            Ana thread işleme sırasında UI'nin bloke olup olmadığını test edin.
+            İşleme başladıktan sonra aşağıdaki butonlara tıklamayı deneyin.
+          </p>
+
+          <div class="test-controls">
+            <button id="testButton1" class="test-btn">🎯 Test Butonu 1</button>
+            <button id="testButton2" class="test-btn">🎲 Test Butonu 2</button>
+            <button id="testButton3" class="test-btn">⚡ Test Butonu 3</button>
+          </div>
+
+          <div class="test-results">
+            <div class="test-status">
+              <span class="status-label">Test Durumu:</span>
+              <span id="testStatus" class="status-value">Hazır</span>
+            </div>
+            <div class="click-counter">
+              <span class="counter-label">Tıklama Sayısı:</span>
+              <span id="clickCount" class="counter-value">0</span>
+            </div>
+            <div class="last-click">
+              <span class="last-click-label">Son Tıklama:</span>
+              <span id="lastClickTime" class="last-click-value">-</span>
+            </div>
+          </div>
+
+          <div class="test-message" id="testMessage">
+            <p>
+              Ana thread işleme başladığında bu butonlara tıklamayı deneyin!
+            </p>
+          </div>
+        </div>
+
+        <div class="progress-container" style="display: none">
+          <div class="progress-bar">
+            <div class="progress-fill"></div>
+          </div>
+          <div class="progress-text">İşleniyor...</div>
+        </div>
+
+        <div class="results">
+          <div class="result-card">
+            <h3>📈 İstatistikler</h3>
+            <div id="stats" class="stats">
+              <div class="stat-item">
+                <span class="label">Dosya Boyutu:</span>
+                <span id="fileSize" class="value">-</span>
+              </div>
+              <div class="stat-item">
+                <span class="label">Kayıt Sayısı:</span>
+                <span id="recordCount" class="value">-</span>
+              </div>
+              <div class="stat-item">
+                <span class="label">İşleme Süresi:</span>
+                <span id="processingTime" class="value">-</span>
+              </div>
+              <div class="stat-item">
+                <span class="label">İşleme Yöntemi:</span>
+                <span id="processingMethod" class="value">-</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-card">
+            <h3>📋 İşlenen Veri Önizlemesi</h3>
+            <div id="dataPreview" class="data-preview">
+              <p class="placeholder">Veri yüklenmedi...</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="comparison">
+          <h3>⚡ Performans Karşılaştırması</h3>
+          <div class="comparison-grid">
+            <div class="comparison-card">
+              <h4>Web Worker</h4>
+              <div id="workerResults" class="comparison-results">
+                <p>Henüz test edilmedi</p>
+              </div>
+            </div>
+            <div class="comparison-card">
+              <h4>Ana Thread</h4>
+              <div id="mainThreadResults" class="comparison-results">
+                <p>Henüz test edilmedi</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer>
+        <div class="research-questions">
+          <h3>🔍 Araştırma Soruları</h3>
+          <div class="questions-grid">
+            <div class="question-card">
+              <h4>SharedWorker nedir?</h4>
+              <p>Worker'dan farkı nedir?</p>
+              <div class="answer" id="sharedWorkerAnswer">
+                <p>
+                  SharedWorker, birden fazla sekme veya pencere arasında
+                  paylaşılabilen bir worker türüdür. Normal Worker'lar her sekme
+                  için ayrı oluşturulurken, SharedWorker tüm sekmeler arasında
+                  ortak kullanılır.
+                </p>
+              </div>
+            </div>
+            <div class="question-card">
+              <h4>Web Worker'da DOM neden kullanılamaz?</h4>
+              <div class="answer" id="domAnswer">
+                <p>
+                  Web Worker'lar ayrı thread'lerde çalışır ve DOM'a doğrudan
+                  erişimleri yoktur. Bu, thread güvenliği ve performans için
+                  tasarlanmıştır. DOM manipülasyonu ana thread'de yapılmalıdır.
+                </p>
+              </div>
+            </div>
+            <div class="question-card">
+              <h4>Web Worker'lar ne zaman karmaşık hale gelir?</h4>
+              <div class="answer" id="complexityAnswer">
+                <p>
+                  Çok fazla worker kullanımı, karmaşık mesajlaşma, bellek
+                  yönetimi sorunları ve debug zorluğu Web Worker'ları karmaşık
+                  hale getirebilir.
+                </p>
+              </div>
+            </div>
+            <div class="question-card">
+              <h4>Comlink.js nedir?</h4>
+              <div class="answer" id="comlinkAnswer">
+                <p>
+                  Comlink.js, Web Worker'lar arasında nesne referanslarını
+                  paylaşmayı ve daha kolay API çağrıları yapmayı sağlayan bir
+                  kütüphanedir.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
