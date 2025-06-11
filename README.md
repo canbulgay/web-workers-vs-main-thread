@@ -6,7 +6,7 @@ Bu proje, Web Worker'ların performans avantajlarını göstermek için büyük 
 
 - **5-10MB büyüklüğünde JSON verisi oluşturma**
 - **Web Worker ile JSON parse işlemi**
-- **Ana thread ile karşılaştırmalı performans testi**
+- **Main Thread ile karşılaştırmalı performans testi**
 - **Gerçek zamanlı UI güncellemeleri**
 - **Modern ve responsive tasarım**
 - **Detaylı performans istatistikleri**
@@ -62,7 +62,7 @@ http://localhost:8000
 ### 3. İşleme
 
 - **"Web Worker ile İşle"** - Arka planda işleme
-- **"Ana Thread ile İşle"** - UI'yi bloke eden işleme
+- **"Main Thread ile İşle"** - UI'yi bloke eden işleme
 
 ### 4. Sonuçları İnceleme
 
@@ -89,7 +89,7 @@ Web Worker'lar ayrı thread'lerde çalışır ve DOM'a doğrudan erişimleri yok
 
 **Nedenleri:**
 
-- **Thread Güvenliği**: DOM manipülasyonu ana thread'de güvenli
+- **Thread Güvenliği**: DOM manipülasyonu Main Thread'de güvenli
 - **Performans**: DOM erişimi maliyetli
 - **Mimari**: Worker'lar hesaplama odaklı
 - **İletişim**: postMessage ile veri paylaşımı
@@ -128,7 +128,7 @@ Web Worker'lar şu durumlarda karmaşık hale gelebilir:
 - ✅ Daha iyi kullanıcı deneyimi
 - ✅ Çoklu çekirdek kullanımı
 
-### Ana Thread Avantajları
+### Main Thread Avantajları
 
 - ✅ Basit implementasyon
 - ✅ Doğrudan DOM erişimi

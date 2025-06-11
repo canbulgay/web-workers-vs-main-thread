@@ -614,20 +614,20 @@ class JSONProcessor {
     }
   }
 
-  // Ana thread'de işle
+  // Main Thread'de işle
   processInMainThread() {
     if (!this.currentData || this.isProcessing) return;
 
     this.isProcessing = true;
     this.isTestActive = true;
     this.testStartTime = Date.now();
-    this.showProgress("Ana thread'de işleniyor...");
+    this.showProgress("Main Thread'de işleniyor...");
     this.updateUI();
 
     // Test durumunu güncelle
-    this.updateTestStatus("testing", "Ana Thread Test");
+    this.updateTestStatus("testing", "Main Thread Test");
     this.updateTestMessage(
-      "Ana thread işleme başladı! Butonlara tıklamayı deneyin - UI bloke olabilir.",
+      "Main Thread işleme başladı! Butonlara tıklamayı deneyin - UI bloke olabilir.",
       "warning"
     );
     this.updateTestButtons(true); // İşleme başladığında butonları aktif et
@@ -677,7 +677,7 @@ class JSONProcessor {
             ? parsedData.length.toLocaleString()
             : "1",
           processingTime: realProcessingTime.toFixed(2) + "ms",
-          processingMethod: "Ana Thread",
+          processingMethod: "Main Thread",
         });
 
         this.showDataPreview(parsedData);
@@ -688,14 +688,17 @@ class JSONProcessor {
         // Test tamamlandı
         this.updateTestStatus("ready", "Test Tamamlandı");
         this.updateTestMessage(
-          "Ana thread işleme tamamlandı! Butonlara tıklayabildiniz mi?",
+          "Main Thread işleme tamamlandı! Butonlara tıklayabildiniz mi?",
           "success"
         );
         this.updateTestButtons(false); // İşleme tamamlandığında butonları devre dışı bırak
 
-        console.log("Ana thread işleme tamamlandı:", realProcessingTime + "ms");
+        console.log(
+          "Main Thread işleme tamamlandı:",
+          realProcessingTime + "ms"
+        );
       } catch (error) {
-        this.showError("Ana thread işleme hatası: " + error.message);
+        this.showError("Main Thread işleme hatası: " + error.message);
         this.isProcessing = false;
         this.isTestActive = false;
         this.hideProgress();
@@ -833,7 +836,7 @@ class JSONProcessor {
     // Test durumunu güncelle
     this.updateTestStatus("ready", "Hazır");
     this.updateTestMessage(
-      "Ana thread işleme başladığında bu butonlara tıklamayı deneyin!",
+      "Main Thread işleme başladığında bu butonlara tıklamayı deneyin!",
       "info"
     );
 
@@ -862,7 +865,7 @@ class JSONProcessor {
 
     // Test aktifse mesaj göster
     if (this.isTestActive) {
-      const processingMethod = this.isProcessing ? "Ana Thread" : "Web Worker";
+      const processingMethod = this.isProcessing ? "Main Thread" : "Web Worker";
       this.updateTestMessage(
         `✅ Buton tıklandı! (${processingMethod} işleme sırasında) - ${currentTime}`,
         "success"

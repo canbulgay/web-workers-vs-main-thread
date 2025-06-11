@@ -37,7 +37,7 @@ function parseJSON(jsonString) {
     const endTime = performance.now();
     const processingTime = endTime - startTime;
 
-    // Sonuçları ana thread'e gönder
+    // Sonuçları Main Thread'e gönder
     self.postMessage({
       type: "parse-complete",
       data: {

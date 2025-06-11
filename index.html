@@ -25,7 +25,7 @@
             ⚡ Web Worker ile İşle
           </button>
           <button id="processMainThread" class="btn btn-warning" disabled>
-            🐌 Ana Thread ile İşle
+            🐌 Main Thread ile İşle
           </button>
         </div>
 
@@ -33,7 +33,7 @@
         <div class="ui-block-test">
           <h3>🧪 UI Bloke Test Demo</h3>
           <p class="test-description">
-            Ana thread işleme sırasında UI'nin bloke olup olmadığını test edin.
+            Main Thread işleme sırasında UI'nin bloke olup olmadığını test edin.
             İşleme başladıktan sonra aşağıdaki butonlara tıklamayı deneyin.
           </p>
 
@@ -60,7 +60,7 @@
 
           <div class="test-message" id="testMessage">
             <p>
-              Ana thread işleme başladığında bu butonlara tıklamayı deneyin!
+              Main Thread işleme başladığında bu butonlara tıklamayı deneyin!
             </p>
           </div>
         </div>
@@ -113,7 +113,7 @@
               </div>
             </div>
             <div class="comparison-card">
-              <h4>Ana Thread</h4>
+              <h4>Main Thread</h4>
               <div id="mainThreadResults" class="comparison-results">
                 <p>Henüz test edilmedi</p>
               </div>
@@ -144,7 +144,7 @@
                 <p>
                   Web Worker'lar ayrı thread'lerde çalışır ve DOM'a doğrudan
                   erişimleri yoktur. Bu, thread güvenliği ve performans için
-                  tasarlanmıştır. DOM manipülasyonu ana thread'de yapılmalıdır.
+                  tasarlanmıştır. DOM manipülasyonu Main Thread'de yapılmalıdır.
                 </p>
               </div>
             </div>
