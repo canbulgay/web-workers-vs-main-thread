@@ -24,7 +24,7 @@ Bu proje, Web Worker'ların performans avantajlarını göstermek için büyük 
 ### 1. Projeyi İndirin
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/canbulgay/web-workers-vs-main-thread
 cd web-workers-vs-main-thread
 ```
 
